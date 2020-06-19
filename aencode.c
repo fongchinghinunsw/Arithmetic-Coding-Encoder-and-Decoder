@@ -23,7 +23,9 @@ int main(void) {
 
   mpfr_t low, high, one;
   mpfr_init2(low, 256);
+  mpfr_set_d(low, 0, rnd);
   mpfr_init2(high, 256);
+  mpfr_set_d(high, 1, rnd);
   mpfr_init2(one, 256);
   mpfr_set_d(one, 1, rnd);
 
@@ -69,25 +71,44 @@ int main(void) {
     }
   }
 
+  /*
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
-      mpfr_out_str(stdout, 10, 10, table->low_range[i], rnd);
+      mpfr_out_str(stdout, 10, 5, table->low_range[i], rnd);
       printf(" - ");
-      mpfr_out_str(stdout, 10, 10, table->high_range[i], rnd);
+      mpfr_out_str(stdout, 10, 5, table->high_range[i], rnd);
       printf("\n\n");
     }
   }
-
-  /*
-  mpfr_t code_range;
-  mpfr_init2(code_range, 256);
-  for (int i = 0; i < table->nchar; i++) {
-    mpfr_sub(code_range, table->high_range[table->chars[i]], table->low_range[table->chars[i]], rnd);
-  }
   */
+
+  // print out frequency.
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
       printf("%c %d\n", i, table->chars[i]);
     }
   }
+
+  // main encoding algorithm.
+  mpfr_t code_range;
+  mpfr_init2(code_range, 256);
+  mpfr_t tmp;
+  mpfr_init2(tmp, 256);
+  for (int i = 0; i < table->nchar; i++) {
+    mpfr_sub(code_range, high, low, rnd);
+
+    mpfr_mul(tmp, code_range, table->high_range[table->text[i]], rnd);
+    mpfr_add(high, low, tmp, rnd); 
+
+    mpfr_mul(tmp, code_range, table->low_range[table->text[i]], rnd);
+    mpfr_add(low, low, tmp, rnd);
+
+  }
+
+  mpfr_out_str(stdout, 10, 10, low, rnd);
+  printf(" ");
+  mpfr_out_str(stdout, 10, 10, high, rnd);
+  printf("\n");
+  mpfr_printf("%.10Rf\n", low);
+
 }
