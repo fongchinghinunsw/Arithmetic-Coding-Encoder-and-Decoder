@@ -21,7 +21,6 @@ int main(void) {
     }
   }
   init_range(table);
-  print_range(table);
 
   mpfr_rnd_t rnd = MPFR_RNDN;
   mpfr_t encoded_number;
@@ -30,20 +29,22 @@ int main(void) {
 
   mpfr_t code_range;
   mpfr_init2(code_range, precision);
-  print_range(table);
 
   for (int i = 0; i < table->nchar; i++) {
     for (int j = 0; j < 256; j++) {
       if (mpfr_cmp(encoded_number, table->low_range[j]) >= 0 &&
           mpfr_cmp(encoded_number, table->high_range[j]) < 0) {
         putchar(j);
-        printf(" ");
-        mpfr_printf("%.30Rf", table->low_range[j]);
-        printf(" ");
-        mpfr_printf("%.30Rf", table->high_range[j]);
-        printf(" ");
-        mpfr_printf("%.30Rf", encoded_number);
-        printf("\n");
+        //printf(" ");
+        //mpfr_printf("%.10Rf", table->low_range[j]);
+	//mpfr_out_str(stdout, 10, 5, table->low_range[i], rnd);
+        //printf(" ");
+        //mpfr_printf("%.10Rf", table->high_range[j]);
+	//mpfr_out_str(stdout, 10, 5, table->high_range[i], rnd);
+        //printf(" ");
+        //mpfr_printf("%.50Rf", encoded_number);
+	//mpfr_out_str(stdout, 10, 5, encoded_number, rnd);
+        //printf("\n");
 
         mpfr_sub(code_range, table->high_range[j], table->low_range[j], rnd);
         mpfr_sub(encoded_number, encoded_number, table->low_range[j], rnd);

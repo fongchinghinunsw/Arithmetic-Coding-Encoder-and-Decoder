@@ -3,7 +3,7 @@
 #include <gmp.h>
 #include <mpfr.h>
 
-#define precision 2048 
+#define precision 100
 
 /**
  * nchar: number of total characters

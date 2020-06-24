@@ -10,6 +10,12 @@ ac_table *init_ac_table() {
   mpfr_set_d(table->portion_size, 0, MPFR_RNDN);
   table->low_range = calloc(256, sizeof(mpfr_t));
   table->high_range = calloc(256, sizeof(mpfr_t));
+  for (int i = 0; i < 256; i++) {
+    mpfr_init2(table->low_range[i], precision);
+  }
+  for (int i = 0; i < 256; i++) {
+    mpfr_init2(table->high_range[i], precision);
+  }
 
   return table;
 }
@@ -37,8 +43,6 @@ void init_range(ac_table *table) {
   mpfr_init2(cur_whole_portion, precision);
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
-      mpfr_init2(table->low_range[i], precision);
-      mpfr_init2(table->high_range[i], precision);
       mpfr_set(table->low_range[i], cur_bottom_line, rnd);
       mpfr_mul_si(cur_whole_portion, table->portion_size, table->chars[i], rnd);
       mpfr_add(cur_bottom_line, cur_bottom_line, cur_whole_portion, rnd);
@@ -52,9 +56,9 @@ void print_range(ac_table *table) {
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
       printf("%c ", i);
-      mpfr_out_str(stdout, 10, 0, table->low_range[i], rnd);
+      mpfr_out_str(stdout, 10, 5, table->low_range[i], rnd);
       printf(" - ");
-      mpfr_out_str(stdout, 10, 0, table->high_range[i], rnd);
+      mpfr_out_str(stdout, 10, 5, table->high_range[i], rnd);
       printf("\n");
     }
   }
