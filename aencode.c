@@ -61,8 +61,7 @@ int main(void) {
 
 //printf("%d %d\n", mpfr_cmp(tmp_low, low), mpfr_cmp(high, tmp_high));
 
-  //printf("--------------\n");
-  int pos = 0;
+  int pos = 2;
   while (pos < MAX_ENCODE_LENGTH+2) {
     //printf("low = %c high = %c\n", low_output[pos], high_output[pos]);
     if (low_output[pos] != high_output[pos]) {
@@ -71,8 +70,10 @@ int main(void) {
 	//mpfr_set(high, tmp_high, rnd);
 
 	int prec = (int)ceil((pos-1)/log10(2))+1;
-	//printf("!!! low = %c high = %c\n", low_output[pos], high_output[pos])
+	//printf("!!! low = %c high = %c\n", low_output[pos], high_output[pos]);
 	//printf("pos = %d, prec = %d\n", pos, prec);
+  //printf("--------------\n");
+        //printf("%d %d\n", prec, pos-1);
 	mpfr_prec_round(low, prec, MPFR_RNDU);
 	mpfr_prec_round(high, prec, MPFR_RNDD);
 

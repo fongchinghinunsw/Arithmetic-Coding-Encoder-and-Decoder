@@ -5,19 +5,25 @@ int main(void) {
   ac_table *table = init_ac_table();
   char *space;
 
-  char buffer[MAX_ENCODE_LENGTH];
-  while ((fgets(buffer, 2048, stdin)) != NULL) {
+  int len = (MAX_ENCODE_LENGTH+2)*3;
+  char buffer[len];
+  while ((fgets(buffer, len, stdin)) != NULL) {
+    //printf("!\n");
     space = strrchr(buffer, ' ');
+    //printf("%s@", buffer);
+    if (space == NULL) {
+      break;
+    }
     *space = '\0';
     int ch = (unsigned char)buffer[0];
     int chars = atoi(space+1);
-    if (chars != 0) {
+    if (chars != 0 && space[2] != '.') {
+      //printf("Hehehe\n");
       table->nchar = table->nchar + chars;
       table->chars[ch] = chars;
     }
   }
 
-  //printf("---------\n");
   init_range(table);
 
   mpfr_t encoded_number;
@@ -26,8 +32,13 @@ int main(void) {
 
   mpfr_t code_range;
   mpfr_init2(code_range, precision);
-
-  //print_range(table);
+/*
+  //printf("--------------\n");
+  char num[2050];
+  mpfr_sprintf(num, "%.2048Rf", encoded_number);
+  printf("%s\n", num);
+  print_range(table);
+*/
 
   for (int i = 0; i < table->nchar; i++) {
     for (int j = 0; j < 256; j++) {
