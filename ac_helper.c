@@ -1,13 +1,14 @@
 #include "ac_helper.h"
 
 ac_table *init_ac_table() {
+  mpfr_rnd_t rnd = MPFR_RNDF;
   // initialize the ac table.
   ac_table *table = calloc(1, sizeof(*table));
   table->nchar = 0;
   table->chars = calloc(256, sizeof(int));
   table->text = calloc(precision, sizeof(int));
   mpfr_init2(table->portion_size, precision);
-  mpfr_set_d(table->portion_size, 0, MPFR_RNDN);
+  mpfr_set_d(table->portion_size, 0, rnd);
   table->low_range = calloc(256, sizeof(mpfr_t));
   table->high_range = calloc(256, sizeof(mpfr_t));
   for (int i = 0; i < 256; i++) {
@@ -22,7 +23,7 @@ ac_table *init_ac_table() {
 
 void init_range(ac_table *table) {
   
-  mpfr_rnd_t rnd = MPFR_RNDN;
+  mpfr_rnd_t rnd = MPFR_RNDF;
   mpfr_t one;
   mpfr_init2(one, precision);
   mpfr_set_d(one, 1, rnd);
@@ -52,7 +53,7 @@ void init_range(ac_table *table) {
 }
 
 void print_range(ac_table *table) {
-  mpfr_rnd_t rnd = MPFR_RNDN;
+  mpfr_rnd_t rnd = MPFR_RNDF;
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
       printf("%c %d ", i, table->chars[i]);

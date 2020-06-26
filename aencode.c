@@ -1,16 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <gmp.h>
-#include <mpfr.h>
-#include <math.h>
-
 #include "ac_helper.h"
 
 static void find_gap(ac_table *table, char *low_output, char *high_output);
 int is_equal(char *num1, char *num2);
 
 int main(void) {
-  mpfr_rnd_t rnd = MPFR_RNDN;
+  mpfr_rnd_t rnd = MPFR_RNDF;
 
   mpfr_t low, high;
   mpfr_init2(low, precision);
