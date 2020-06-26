@@ -6,6 +6,9 @@
 
 #include "ac_helper.h"
 
+static void find_gap(ac_table *table, char *low_output, char *high_output);
+int is_equal(char *num1, char *num2);
+
 int main(void) {
   mpfr_rnd_t rnd = MPFR_RNDN;
 
@@ -45,36 +48,93 @@ int main(void) {
   }
   //printf("------------\n");
 
-  char low_output[100];
+  // 2 extra space for "0." at the beginning.
+  char low_output[MAX_ENCODE_LENGTH+2];
+  char high_output[MAX_ENCODE_LENGTH+2];
+  mpfr_sprintf(low_output, "%.2048Rf", low);
+  mpfr_sprintf(high_output, "%.2048Rf", high);
 
-  char high_output[100];
-  mpfr_sprintf(low_output, "%.15Rf", low);
-  mpfr_sprintf(high_output, "%.15Rf", high);
+  //mpfr_printf("%.150Rf\n", low);
+  //mpfr_printf("%.150Rf\n", high);
 
-  mpfr_t tmp_low;
+
+  // save the value of low and high for future reference.
+  mpfr_t tmp_low, tmp_high;
   mpfr_init2(tmp_low, precision);
-  mpfr_t tmp_high;
   mpfr_init2(tmp_high, precision);
-  
-  for (int i = 0; i < 99; i++) {
-    //printf("low = %c high = %c\n", low_output[i], high_output[i]);
-    if (low_output[i] != high_output[i]) {
-      int prec = (int)ceil((i-1)/log10(2))+1;
-      //printf("i = %d, prec = %d\n", i, prec);
-      mpfr_prec_round(low, prec, MPFR_RNDU);
-      mpfr_prec_round(high, prec, MPFR_RNDD);
+  mpfr_set(tmp_low, low, rnd);
+  mpfr_set(tmp_high, high, rnd);
+
+//printf("%d %d\n", mpfr_cmp(tmp_low, low), mpfr_cmp(high, tmp_high));
+
+  //printf("--------------\n");
+  int pos = 0;
+  while (pos < MAX_ENCODE_LENGTH+2) {
+    //printf("low = %c high = %c\n", low_output[pos], high_output[pos]);
+    if (low_output[pos] != high_output[pos]) {
+      //do {
+	//mpfr_set(low, tmp_low, rnd);
+	//mpfr_set(high, tmp_high, rnd);
+
+	int prec = (int)ceil((pos-1)/log10(2))+1;
+	//printf("!!! low = %c high = %c\n", low_output[pos], high_output[pos])
+	//printf("pos = %d, prec = %d\n", pos, prec);
+	mpfr_prec_round(low, prec, MPFR_RNDU);
+	mpfr_prec_round(high, prec, MPFR_RNDD);
+
+	mpfr_sprintf(low_output, "%.2048Rf", low);
+	mpfr_sprintf(high_output, "%.2048Rf", high);
+	low_output[pos+2] = '\0';
+	high_output[pos+2] = '\0';
+
+	//mpfr_printf("%.150Rf\n", low);
+	//mpfr_printf("%.150Rf\n", high);
+
+        pos++;
+/*
+        mpfr_clear(low);
+        mpfr_clear(high);
+	mpfr_init2(low, precision);
+	mpfr_init2(high, precision);
+*/
+
+      //} while (is_equal(low_output, high_output));
       break;
     }
+    pos++;
   }
-  //printf("%s\n", low_output);
-  //printf("%s\n", high_output);
-  //mpfr_prec_round(low, 25, MPFR_RNDU);
-  //mpfr_prec_round(high, 25, MPFR_RNDD);
-  
-  mpfr_printf("%.20Rf", low);
+
+  printf("%s ", low_output);
+  printf("%s\n", high_output);
+  //printf("--------------\n");
+/*
+  mpfr_printf("%.150Rf", low);
   printf(" ");
-  mpfr_printf("%.20Rf", high);
+  mpfr_printf("%.150Rf", high);
   printf("\n");
-  
+*/
   return 0;
+}
+
+static void find_gap(ac_table *table, char *low_output, char *high_output) {
+
+  int pos = 0;
+  while (pos < table->nchar+2) {
+    //printf("low = %c high = %c\n", low_output[pos], high_output[pos]);
+    if (low_output[pos] != high_output[pos]) {
+      break;
+    }
+    pos++;
+  }
+}
+
+int is_equal(char *num1, char *num2) {
+  int i = 0;
+  while (num1[i] != '\0') {
+    if (num1[i] != num2[i]) {
+      return 0;
+    }
+    i++;
+  }
+  return 1;
 }

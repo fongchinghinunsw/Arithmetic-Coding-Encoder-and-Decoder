@@ -11,8 +11,9 @@ int main(void) {
   ac_table *table = init_ac_table();
   char *space;
 
-  char buffer[2048];
+  char buffer[MAX_ENCODE_LENGTH];
   while ((fgets(buffer, 2048, stdin)) != NULL) {
+    //printf("%s\n", buffer);
     space = strrchr(buffer, ' ');
     *space = '\0';
     int ch = (unsigned char)buffer[0];
@@ -85,5 +86,4 @@ int main(void) {
       }
     }
   }
-
 }

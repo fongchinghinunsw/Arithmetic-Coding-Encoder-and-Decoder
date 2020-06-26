@@ -3,6 +3,7 @@
 #include <gmp.h>
 #include <mpfr.h>
 
+#define MAX_ENCODE_LENGTH 2048
 #define precision 6805 // ceil(2048/log(2)) + 1, minimum number of bits required to round-trip every 2048-digit decimal floating-point number.
 
 /**
