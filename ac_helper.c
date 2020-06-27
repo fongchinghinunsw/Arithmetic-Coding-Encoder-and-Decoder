@@ -57,9 +57,9 @@ void print_range(ac_table *table) {
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
       printf("%c %d ", i, table->chars[i]);
-      mpfr_out_str(stdout, 10, 5, table->low_range[i], rnd);
+      mpfr_out_str(stdout, 10, 20, table->low_range[i], rnd);
       printf(" - ");
-      mpfr_out_str(stdout, 10, 5, table->high_range[i], rnd);
+      mpfr_out_str(stdout, 10, 20, table->high_range[i], rnd);
       printf("\n");
     }
   }

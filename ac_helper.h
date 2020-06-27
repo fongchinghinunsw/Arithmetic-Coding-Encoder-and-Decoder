@@ -6,7 +6,7 @@
 #include <math.h>
 
 #define MAX_ENCODE_LENGTH 2048
-#define precision 20000 //6805 // ceil(2048/log(2)) + 1, minimum number of bits required to round-trip every 2048-digit decimal floating-point number.
+#define precision 20000U //6805 // ceil(2048/log(2)) + 1, minimum number of bits required to round-trip every 2048-digit decimal floating-point number.
 
 /**
  * nchar: number of total characters
