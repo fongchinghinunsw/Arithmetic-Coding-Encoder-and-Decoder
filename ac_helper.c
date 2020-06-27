@@ -1,12 +1,12 @@
 #include "ac_helper.h"
 
+// initialize the ac table.
 ac_table *init_ac_table() {
   mpfr_rnd_t rnd = MPFR_RNDF;
-  // initialize the ac table.
   ac_table *table = calloc(1, sizeof(*table));
   table->nchar = 0;
   table->chars = calloc(256, sizeof(int));
-  table->text = calloc(precision, sizeof(int));
+  table->text = calloc(MAX_ENCODE_LENGTH, sizeof(int));
   mpfr_init2(table->portion_size, precision);
   mpfr_set_d(table->portion_size, 0, rnd);
   table->low_range = calloc(256, sizeof(mpfr_t));
@@ -21,6 +21,7 @@ ac_table *init_ac_table() {
   return table;
 }
 
+// initialize the range table inside the ac table.
 void init_range(ac_table *table) {
   
   mpfr_rnd_t rnd = MPFR_RNDF;
@@ -52,6 +53,8 @@ void init_range(ac_table *table) {
   }
 }
 
+// helper function prints out the range table.
+// used for debugging.
 void print_range(ac_table *table) {
   mpfr_rnd_t rnd = MPFR_RNDF;
   for (int i = 0; i < 256; i++) {
@@ -65,6 +68,8 @@ void print_range(ac_table *table) {
   }
 }
 
+// helper function prints out the frequency of each character.
+// used for debugging and input to adecode.
 void print_frequency(ac_table *table) {
   for (int i = 0; i < 256; i++) {
     if (table->chars[i] != 0) {
