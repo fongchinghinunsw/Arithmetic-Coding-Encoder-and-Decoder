@@ -1,10 +1,10 @@
 #include "ac_helper.h"
 
-static void find_gap(char *low_output, char *high_output);
+static void find_gap(mpfr_t *low, mpfr_t *high, char *low_output, char *high_output);
 int is_equal(char *num1, char *num2);
 
+mpfr_rnd_t rnd = MPFR_RNDF;
 int main(void) {
-  mpfr_rnd_t rnd = MPFR_RNDF;
 
   mpfr_t low, high;
   mpfr_init2(low, precision);
@@ -51,16 +51,27 @@ int main(void) {
   //mpfr_printf("%.2048Rf\n", low);
   //mpfr_printf("%.2048Rf\n", high);
 
-  //find_gap(low_output, high_output);
+  find_gap(&low, &high, low_output, high_output);
 
 
 
+
+
+  //printf("After rounding with truncate\n");
+  printf("%s ", low_output);
+  printf("%s\n", high_output);
+
+
+  return 0;
+}
+
+static void find_gap(mpfr_t *low, mpfr_t *high, char *low_output, char *high_output) {
   // save the value of low and high for future reference.
   mpfr_t tmp_low, tmp_high;
   mpfr_init2(tmp_low, precision);
   mpfr_init2(tmp_high, precision);
-  mpfr_set(tmp_low, low, rnd);
-  mpfr_set(tmp_high, high, rnd);
+  mpfr_set(tmp_low, *low, rnd);
+  mpfr_set(tmp_high, *high, rnd);
 
   int pos = 2;
   while (pos < MAX_ENCODE_LENGTH) {
@@ -68,18 +79,18 @@ int main(void) {
     if (low_output[pos] != high_output[pos]) {
 
       do {
-	mpfr_set(low, tmp_low, rnd);
-	mpfr_set(high, tmp_high, rnd);
+	mpfr_set(*low, tmp_low, rnd);
+	mpfr_set(*high, tmp_high, rnd);
 
 	int prec = (int)ceil((pos-1)/log10(2))+1;
 
-	mpfr_prec_round(low, prec, MPFR_RNDU);
-	mpfr_prec_round(high, prec, MPFR_RNDD);
+	mpfr_prec_round(*low, prec, MPFR_RNDU);
+	mpfr_prec_round(*high, prec, MPFR_RNDD);
 
 
         //printf("After rounding without truncate\n");
-	mpfr_sprintf(low_output, "%.2048Rf", low);
-	mpfr_sprintf(high_output, "%.2048Rf", high);
+	mpfr_sprintf(low_output, "%.2048Rf", *low);
+	mpfr_sprintf(high_output, "%.2048Rf", *high);
 	//printf("%s\n", low_output);
 	//printf("%s\n", high_output);
 
@@ -101,17 +112,6 @@ int main(void) {
     }
     pos++;
   }
-
-
-  //printf("After rounding with truncate\n");
-  printf("%s ", low_output);
-  printf("%s\n", high_output);
-
-
-  return 0;
-}
-
-static void find_gap(char *low_output, char *high_output) {
 
 }
 
