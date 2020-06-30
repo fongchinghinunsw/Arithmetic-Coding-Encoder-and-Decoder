@@ -11,14 +11,14 @@ int main(void) {
   while ((fgets(buffer, len, stdin)) != NULL) {
     // get the start point of the frequency.
     space = strrchr(buffer, ' ');
-    // finished reading the whole character frequency table.
+    // if no space is read => last line of the input.
     if (space == NULL) {
       break;
     }
     *space = '\0';
     int ch = (unsigned char)buffer[0];
     int chars = atoi(space+1);
-    // prevent matching the encoded number.
+    // prevent matching the last line.
     if ((unsigned char)buffer[1] != '.') {
       table->nchar = table->nchar + chars;
       table->chars[ch] = chars;

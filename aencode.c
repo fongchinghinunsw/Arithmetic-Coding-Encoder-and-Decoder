@@ -56,17 +56,19 @@ int main(void) {
 }
 
 /*
-  Return the gap between two mpfr_t and save it into low_output and high_output.
+  Return the gap in shortest form and save it into low_output and high_output.
 */
 static void find_gap(mpfr_t *low, mpfr_t *high, char *low_output, char *high_output) {
   // handle the special case in which the range is 0.0 to 1.0
+  // in this case just truncate all the extra zeros in the output string.
   if (high_output[0] == '1') {
     low_output[3] = '\0';
     high_output[3] = '\0';
     return;
   }
+
   int pos = 2;
-  while (pos < MAX_ENCODE_LENGTH+2) { // 2 space for "0." at the beginning.
+  while (pos < MAX_ENCODE_LENGTH+2) { // 2 spaces for "0." at the beginning.
     if (low_output[pos] != high_output[pos]) {
       // number of bits required for round-trip conversionsa.
       int prec = (int)ceil((pos-1)/log10(2))+1;
@@ -78,11 +80,13 @@ static void find_gap(mpfr_t *low, mpfr_t *high, char *low_output, char *high_out
       mpfr_sprintf(low_output, "%.2048Rf", *low);
       mpfr_sprintf(high_output, "%.2048Rf", *high);
 
+      // if the difference > 1, simply increase low_range by 1 at this position.
       if (high_output[pos] - low_output[pos] > 1) {
         low_output[pos]++;
         low_output[pos+1] = '\0';
         high_output[pos+1] = '\0';
       } else {
+      // if the differece <= 1, need one more digit to represent the gap.
 	low_output[pos+2] = '\0';
 	int lp = pos + 1;
 	low_output[lp]++;
