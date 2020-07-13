@@ -5,7 +5,8 @@ The input to the encoder is the source content to be encoded. It can be input vi
 
 The input to the decoder is the same as the output from the encoder, except that the last line contains a decimal number (the AC encoded value of the source content), plus optionally a space and then some comment text.
 
-# Usage
+## Usage
+```
 > cat a.txt
 BILL GATES>
 > aencode < a.txt
@@ -23,3 +24,4 @@ T 1
 > cat a.txt | aencode | adecode > b.txt
 > diff a.txt b.txt
 >
+```
